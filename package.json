@@ -12,7 +12,7 @@
   "scripts": {
     "prepare": "husky",
     "build:docs": "cd packages/docs && npm run build",
-    "build:widget": "cd packages/react-micro-carousel && npm run build:lib",
+    "build": "cd packages/react-micro-carousel && npm run build:lib && npm run build:css",
     "test:widget": "cd packages/react-micro-carousel && npm run test:ci",
     "tsc:widget": "cd packages/react-micro-carousel && npm run tsc",
     "format": "prettier --write .",

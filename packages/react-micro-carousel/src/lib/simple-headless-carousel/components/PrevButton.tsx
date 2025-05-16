@@ -12,19 +12,20 @@ import { SliderButton, type SliderButtonProps } from './SliderButton';
  * @param {ReactNode} children - The child components to be wrapped.
  * @param {Function} onClick - The callback function to be called when the button is clicked.
  * @param {string} className - An optional class name to be applied to the button.
+ * @param {boolean} disabled - Whether the button is disabled.
+ * @param {React.CSSProperties} style - The inline styles for the button.
  */
-export const PrevButton = memo(
-  ({ onClick, className, children }: SliderButtonProps) => {
-    const { dispatch } = useContext(CarouselContext);
+export const PrevButton = memo((props: SliderButtonProps) => {
+  const { children, style, ...restProps } = props;
+  const { dispatch } = useContext(CarouselContext);
 
-    return (
-      <SliderButton
-        className={className}
-        action={() => dispatch({ action: 'prev' })}
-        onClick={onClick}
-      >
-        {children}
-      </SliderButton>
-    );
-  },
-);
+  return (
+    <SliderButton
+      action={() => dispatch({ action: 'prev' })}
+      style={style}
+      {...restProps}
+    >
+      {children}
+    </SliderButton>
+  );
+});

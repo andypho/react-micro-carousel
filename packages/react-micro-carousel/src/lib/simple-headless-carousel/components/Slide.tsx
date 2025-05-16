@@ -8,6 +8,8 @@ type SlideProps = {
   index: number;
   className?: string;
   onClick?: () => void;
+  useSlideHight?: boolean;
+  style?: React.CSSProperties;
 };
 
 /**
@@ -17,45 +19,54 @@ type SlideProps = {
  * @param {ReactNode} children - The content of the slide.
  * @param {number} index - Slide index
  * @param {string} className - Additional CSS classes for the slide.
+ * @param {boolean} useSlideHight - Whether to use the slide height.
+ * @param {React.CSSProperties} style - Inline styles for the slide.
  * @param {() => void} onClick - Callback function when the slide is clicked.
  */
-export const Slide = memo(
-  ({ children, index, className, onClick }: SlideProps) => {
-    const { state } = useContext(CarouselContext);
-    const isVisible = useRef(false);
-    const intersectionRef = useRef(null);
-    const { entry } = useIntersectionObserver({
-      ref: intersectionRef,
-      opts: { threshold: 0.5 },
-    });
+export const Slide = memo((props: SlideProps) => {
+  const {
+    children,
+    index,
+    className,
+    onClick,
+    useSlideHight = true,
+    style,
+  } = props;
 
-    const { currentIndex, slidesVisible, lazy, slideHeight } = state;
+  const { state } = useContext(CarouselContext);
+  const isVisible = useRef(false);
+  const intersectionRef = useRef(null);
+  const { entry } = useIntersectionObserver({
+    ref: intersectionRef,
+    opts: { threshold: 0.5 },
+  });
 
-    if (!isVisible.current && entry?.isIntersecting) {
-      isVisible.current = entry.isIntersecting;
-    }
+  const { currentIndex, slidesVisible, lazy, slideHeight } = state;
 
-    const showLazy = lazy ? isVisible.current : true;
-    const showSlide = currentIndex === index || showLazy;
-    const isSelected =
-      index >= currentIndex && index < currentIndex + slidesVisible;
+  if (!isVisible.current && entry?.isIntersecting) {
+    isVisible.current = entry.isIntersecting;
+  }
 
-    return (
-      <div
-        role="row"
-        className={clsx(
-          'slide-item pointer-events-none relative w-full',
-          className,
-        )}
-        style={{ height: slideHeight }}
-        ref={intersectionRef}
-        data-index={index}
-        data-testid={`slide-${index}`}
-        aria-selected={isSelected}
-        onClick={onClick}
-      >
-        {showSlide && children}
-      </div>
-    );
-  },
-);
+  const showLazy = lazy ? isVisible.current : true;
+  const showSlide = currentIndex === index || showLazy;
+  const isSelected =
+    index >= currentIndex && index < currentIndex + slidesVisible;
+
+  return (
+    <div
+      role="row"
+      className={clsx(
+        'slide-item pointer-events-none relative w-full',
+        className,
+      )}
+      style={{ ...(useSlideHight ? { height: slideHeight } : {}), ...style }}
+      ref={intersectionRef}
+      data-index={index}
+      data-testid={`slide-${index}`}
+      aria-selected={isSelected}
+      onClick={onClick}
+    >
+      {showSlide && children}
+    </div>
+  );
+});
